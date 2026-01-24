@@ -1,87 +1,55 @@
-# Ollama zeropoint app
+# Immich zeropoint module
 
-This module defines the Ollama app for zeropoint os using Terraform and the Docker provider.
+This Terraform module deploys the official Immich application and the Immich microservices containers into a pre-existing Docker network managed by Zeropoint. Images are pulled directly from the upstream registry; no local Dockerfile build is required.
 
 ## Resources Created
 
-- **Docker Image**: Builds from local `Dockerfile` with platform-specific targeting
-- **Docker Container**: Ollama server with optional GPU support
+- **Docker Images**: Pulls `ghcr.io/immich-app/immich:latest` and `ghcr.io/immich-app/immich-microservices:latest`
+- **Docker Containers**: `immich` and `immich-microservices` running on the provided Zeropoint network
 
 ## Requirements
 
 - Terraform >= 1.0
 - Docker provider ~> 3.0
-- GPU support (optional):
-  - NVIDIA: NVIDIA Container Runtime
-  - AMD: ROCm drivers
-  - Intel: Intel GPU drivers
 
 ## Usage
 
 ### Via zeropoint API
 
+POST a module install to the zeropoint node (zeropoint injects `zp_` variables):
+
 ```bash
 curl -X POST http://<zeropoint-node-name>:2370/modules/install \
   -H "Content-Type: application/json" \
   -d '{
-    "source": "https://github.com/zeropoint-os/ollama.git", 
-    "module_id": "ollama",
-    "arch": "arm64",
-    "gpu_vendor": "nvidia"
+    "source": "https://github.com/zeropoint-os/immich-module.git",
+    "module_id": "immich",
+    "arch": "amd64"
   }'
 ```
 
 ### Manual (for testing)
 
-Use Run task (Shift+Alt+T)
-1. Full test - setup and apply
-2. Full test - cleanup
-
-The install will be performed using Docker-in-Docker.
+Use the workspace Run tasks to create a test network and run Terraform init/plan/apply.
 
 ## Inputs
 
-| Name | Type | Description | Default |
-|------|------|-------------|---------|
-| `zp_app_id` | string | Unique identifier for this app instance (injected by zeropoint) | `"ollama"` |
-| `zp_network_name` | string | Pre-created Docker network name (injected by zeropoint) | (required) |
-| `zp_arch` | string | Target architecture: amd64, arm64, etc. (injected by zeropoint) | `"amd64"` |
-| `zp_gpu_vendor` | string | GPU vendor: nvidia, amd, intel, or empty for no GPU (injected by zeropoint) | `""` |
-| `zp_module_storage` | string | Host path for persistent storage (injected by zeropoint) | (required) |
+The module retains all `zp_` inputs injected by Zeropoint and does not remove or rename them. Important inputs:
+
+- `zp_network_name` (string) - Docker network name (required)
+- `zp_arch` (string) - Target architecture (default: `amd64`)
+- `zp_module_storage` (string) - Host path for persistent storage (required)
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| `main` | Main Ollama container resource (docker_container) |
-
-## GPU Support
-
-This module supports multiple GPU vendors:
-
-- **NVIDIA**: Sets `runtime = "nvidia"` and `gpus = "all"`
-- **AMD/Intel**: Sets `gpus = "all"` (uses default runtime with device access)
-- **No GPU**: Both runtime and gpus set to null (CPU-only mode)
-
-The GPU vendor is auto-detected by zeropoint and injected via the `gpu_vendor` variable.
+- `immich_main` - The `docker_container` resource for Immich
+- `microservices` - The `docker_container` resource for Immich microservices
+- `containers` - Map of container names for service discovery
 
 ## Network & Service Discovery
 
-- **Internal Port**: 11434 (Ollama API)
-- **Network**: Uses pre-created network provided by zeropoint via `zp_network_name`
-- **No Host Ports**: Service discovery via DNS only
-- **Container Name**: `${zp_module_id}-main` (e.g., `ollama-main`)
+Containers are attached to the provided Docker network and can be reached by container name (DNS) from other containers on that network.
 
-## Accessing Ollama
+## Testing
 
-### From Other Containers (Service Discovery)
-
-Other apps linked to Ollama can access it via DNS:
-
-```bash
-curl http://ollama-main:11434/api/tags
-```
-
-### From Host (via Exposure)
-
-External access requires creating an exposure through zeropoint API.
+Use the provided test script to verify containers exist and print their network IPs.

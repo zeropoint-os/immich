@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  postgres-main:
+    image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0@sha256:bcf63357191b76a916ae5eb93464d65c07511da41e3bf7a8416db519b40b1c23
+    container_name: postgres-main
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: immich
+    volumes:
+      - ../data/postgres:/var/lib/postgresql/data
+    networks:
+      - zpm-test-nw
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+
+  redis-main:
+    image: redis:7
+    container_name: redis-main
+    volumes:
+      - ../data/redis:/data
+    networks:
+      - zpm-test-nw
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  zpm-test-nw:
+    external: true
+    name: zpm-test-nw

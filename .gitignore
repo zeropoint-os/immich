@@ -27,4 +27,11 @@ Thumbs.db
 *.swo
 *~
 
-data/**
+# Ignore everything under data
+/data/**
+
+# Allow directories under data so Git can traverse to unignored files
+!/data/**/
+
+# Do not ignore any files named .immich anywhere under data
+!/data/**/.immich

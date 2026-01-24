@@ -5,7 +5,8 @@
 		"context": ".."
 	},
 	"overrideCommand": true,
-	"postAttachCommand": "docker network create zpm-test-nw 2>/dev/null || true",
+	"postCreateCommand": "docker network create zpm-test-nw || true && sudo chown -R vscode ./data",
+	"postAttachCommand": "docker compose -f .devcontainer/docker-compose.services.yml up -d",
 	"customizations": {
 		"vscode": {
 			"settings": {
@@ -14,6 +15,13 @@
 			"extensions": [
 				"4ops.terraform"
 			]
+		}
+	},
+	"forwardPorts": [3000],
+	"portsAttributes": {
+		"3000": {
+			"label": "Immich frontend",
+			"onAutoForward": "notify"
 		}
 	},
 	"remoteUser": "vscode",

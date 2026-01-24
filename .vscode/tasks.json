@@ -40,7 +40,7 @@
     {
       "label": "Terraform: Plan",
       "type": "shell",
-      "command": "terraform plan -var='zp_network_name=zpm-test-nw' -var='zp_module_storage=/workspaces/data' -out=tfplan",
+      "command": "terraform plan -var='zp_network_name=zpm-test-nw' -var='zp_module_storage=${workspaceFolder}/data'",
       "problemMatcher": [],
       "presentation": {
         "echo": true,
@@ -52,7 +52,7 @@
     {
       "label": "Terraform: Apply",
       "type": "shell",
-      "command": "terraform apply -var='zp_network_name=zpm-test-nw' -var='zp_module_storage=/workspaces/data' -auto-approve",
+      "command": "terraform apply -var='zp_network_name=zpm-test-nw' -var='zp_module_storage=${workspaceFolder}/data' -auto-approve",
       "problemMatcher": [],
       "presentation": {
         "echo": true,
@@ -64,7 +64,7 @@
     {
       "label": "Terraform: Destroy",
       "type": "shell",
-      "command": "terraform destroy -var='zp_network_name=zpm-test-nw' -var='zp_module_storage=/workspaces/data' -auto-approve",
+      "command": "terraform destroy -var='zp_network_name=zpm-test-nw' -var='zp_module_storage=${workspaceFolder}/data' -auto-approve",
       "problemMatcher": [],
       "presentation": {
         "echo": true,
