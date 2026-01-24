@@ -170,15 +170,8 @@ output "main" {
 
 output "main_ports" {
   value = {
-    api = {
-      port        = 3001
-      protocol    = "http"
-      transport   = "tcp"
-      description = "Immich backend API"
-      default     = true
-    }
     web = {
-      port        = 3000
+      port        = 2283
       protocol    = "http"
       transport   = "tcp"
       description = "Immich frontend"

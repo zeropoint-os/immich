@@ -5,7 +5,7 @@
 		"context": ".."
 	},
 	"overrideCommand": true,
-	"postCreateCommand": "docker network create zpm-test-nw || true && sudo chown -R vscode ./data",
+	"postCreateCommand": "docker network create --driver bridge zpm-test-nw || true && sudo chown -R vscode ./data",
 	"postAttachCommand": "docker compose -f .devcontainer/docker-compose.services.yml up -d",
 	"customizations": {
 		"vscode": {
@@ -17,9 +17,9 @@
 			]
 		}
 	},
-	"forwardPorts": [3000],
+	"forwardPorts": [2283],
 	"portsAttributes": {
-		"3000": {
+		"2283": {
 			"label": "Immich frontend",
 			"onAutoForward": "notify"
 		}

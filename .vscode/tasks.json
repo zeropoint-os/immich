@@ -88,7 +88,7 @@
     {
       "label": "Docker: Create Test Network",
       "type": "shell",
-      "command": "docker network create zpm-test-nw || echo 'Network already exists'",
+      "command": "docker network create --driver bridge zpm-test-nw || echo 'Network already exists'",
       "problemMatcher": [],
       "presentation": {
         "echo": true,
