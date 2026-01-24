@@ -1,0 +1,146 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Terraform: Init",
+      "type": "shell",
+      "command": "terraform init",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+      }
+    },
+    {
+      "label": "Terraform: Validate",
+      "type": "shell",
+      "command": "terraform validate",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Terraform: Format",
+      "type": "shell",
+      "command": "terraform fmt",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Terraform: Plan",
+      "type": "shell",
+      "command": "terraform plan -var='zp_network_name=zpm-test-nw' -var='zp_module_storage=/workspaces/data' -out=tfplan",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Terraform: Apply",
+      "type": "shell",
+      "command": "terraform apply -var='zp_network_name=zpm-test-nw' -var='zp_module_storage=/workspaces/data' -auto-approve",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Terraform: Destroy",
+      "type": "shell",
+      "command": "terraform destroy -var='zp_network_name=zpm-test-nw' -var='zp_module_storage=/workspaces/data' -auto-approve",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Terraform: Show",
+      "type": "shell",
+      "command": "terraform show",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Docker: Create Test Network",
+      "type": "shell",
+      "command": "docker network create zpm-test-nw || echo 'Network already exists'",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Docker: Remove Test Network",
+      "type": "shell",
+      "command": "docker network rm zpm-test-nw || echo 'Network does not exist'",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Test: Run Ollama Test Script",
+      "type": "shell",
+      "command": "bash ollama-test.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Full Test: Setup and Apply",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Docker: Create Test Network",
+        "Terraform: Init",
+        "Terraform: Validate",
+        "Terraform: Plan",
+        "Terraform: Apply"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Full Test: Cleanup",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Terraform: Destroy",
+        "Docker: Remove Test Network"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}

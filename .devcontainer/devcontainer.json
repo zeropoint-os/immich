@@ -1,0 +1,27 @@
+{
+	"name": "ollama",
+	"build": {
+		"dockerfile": "dev.Dockerfile",
+		"context": ".."
+	},
+	"overrideCommand": true,
+	"postAttachCommand": "docker network create zpm-test-nw 2>/dev/null || true",
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"terminal.integrated.defaultProfile.linux": "bash"
+			},
+			"extensions": [
+				"4ops.terraform"
+			]
+		}
+	},
+	"remoteUser": "vscode",
+	"features": {
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
+		"ghcr.io/nils-geistmann/devcontainers-features/create-remote-user:0": {
+			"passwordLessSudo": true,
+			"additionalGroups": ["docker"]
+		}
+	}
+}
