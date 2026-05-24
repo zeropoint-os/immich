@@ -38,7 +38,8 @@ The module retains all `zp_` inputs injected by Zeropoint and does not remove or
 
 - `zp_network_name` (string) - Docker network name (required)
 - `zp_arch` (string) - Target architecture (default: `amd64`)
-- `zp_module_storage` (string) - Host path for persistent storage (required)
+- `zp_module_dir` (string) - Agent's working directory for this module — terraform state + cloned source (required)
+- `zp_storage_dir` (string) - Isolated data root for this module — all bind mounts must live under here (required)
 
 ## Outputs
 

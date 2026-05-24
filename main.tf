@@ -30,9 +30,14 @@ variable "zp_gpu_vendor" {
   description = "GPU vendor - nvidia, amd, intel, or empty for no GPU (injected by zeropoint)"
 }
 
-variable "zp_module_storage" {
+variable "zp_module_dir" {
   type        = string
-  description = "Host path for persistent storage (injected by zeropoint)"
+  description = "Agent's working directory for this module (injected by zeropoint). Terraform state and the cloned source live here. Users may edit this — the agent moves the directory atomically."
+}
+
+variable "zp_storage_dir" {
+  type        = string
+  description = "Isolated data root for this module (injected by zeropoint). All bind mounts MUST be under this path so the agent can move user data when zp_storage_dir is edited (atomic same-fs, rsync-and-swap cross-fs)."
 }
 
 # External service inputs (to be provided/linked by the user)
@@ -137,7 +142,7 @@ resource "docker_container" "immich" {
   depends_on = [docker_container.machine_learning]
 
   volumes {
-    host_path      = "${var.zp_module_storage}/immich"
+    host_path      = "${var.zp_storage_dir}/immich"
     container_path = "/data"
   }
 }
@@ -157,7 +162,7 @@ resource "docker_container" "machine_learning" {
   runtime = var.zp_gpu_vendor != "" ? "nvidia" : null
 
   volumes {
-    host_path      = "${var.zp_module_storage}/immich-machine-learning"
+    host_path      = "${var.zp_storage_dir}/immich-machine-learning"
     container_path = "/cache"
   }
 }
